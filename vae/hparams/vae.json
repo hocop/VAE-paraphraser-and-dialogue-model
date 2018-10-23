@@ -1,0 +1,62 @@
+{
+    "model_name": "vae",
+    "user_name": "default",
+    "experiment_series": "vae",
+    
+    "num_layers": 3,
+    
+    "hidden_size": 300,
+    "embedding_size": 300,
+    "latent_size": 128,
+    "dropout_rate": 0.25,
+    
+    "loss_normalize_by_length": true,
+    
+    "use_beam_search": true,
+    "beam_width": 2,
+    "length_penalty_weight": 0.6,
+    "batch_size": 4,
+    "draw_attention": false,
+    "draw_entropy": false,
+    
+    "log_bleu_every": 1,
+    "tokens_per_batch": 30000,
+    "num_epochs": 1,
+    "learning_rate": 0.001,
+    "label_smoothing": 0.1,
+    "keep_checkpoint_max": 3,
+    "adam": true,
+    
+    "comments_path": "/home/<user_name>/data/ai_we_deserve/all_comments/",
+    "paraphrases_path": "/home/<user_name>/data/datasets/paraphrases/",
+    
+    "pairs_path": "/home/<user_name>/data/vae/pairs/",
+    "data_path": "/home/<user_name>/data/vae/data/",
+    "checkpoints_path": "/home/<user_name>/data/vae/heavy_model_data/<model_name>/checkpoints/",
+    
+    "answers_path": "/home/<user_name>/data/vae/light_model_data/<model_name>/answers/",
+    "export_path": "/home/<user_name>/data/vae/light_model_data/<model_name>/saved_model/",
+    
+    "input_encoders": [
+            {
+                "type": "wordpiece",
+                "path": "/home/<user_name>/data/vae/encoder.dat",
+                "build": true
+            }
+        ],
+    "output_encoder": {
+            "type": "wordpiece",
+            "path": "/home/<user_name>/data/vae/encoder.dat",
+            "build": false
+    },
+    
+    "max_source_len": 1000,
+    "max_answer_len": 1000,
+    "max_chunk_size": 10000,
+    "max_lines_for_encoder": 1e6,
+    
+    
+    "copy": false,
+    "freezing_mode": false,
+    "attention_scheme": "None"
+}

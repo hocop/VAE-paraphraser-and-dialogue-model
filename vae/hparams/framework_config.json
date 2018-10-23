@@ -1,0 +1,9 @@
+{
+    "header": "Experiments with decoder",
+    
+    "user_name": "default",
+    
+    "watch_dirs": ["/home/<user_name>/data/light_model_data/"],
+    
+    "save_dir": "/home/<user_name>/data/light_model_data/"
+}
