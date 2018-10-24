@@ -10,8 +10,8 @@ hparams = NormalizeEncoderSettings(hparams)
 
 # if run over ssh, run `stty iutf8` to fix backspace deleting always 1 byte
 
-server = '127.0.0.1:9000'
-max_source_length = 50000 
+server = '127.0.0.1:8500'
+max_source_length = 1000
 
 def make_seq_example(input_ids, feature_name="so"):
     features = {
@@ -52,12 +52,6 @@ def do_inference(hostport, features, model_name):
     else:
         return result.outputs['output'].float_val
 
-# make one test request
-source = [1] + [0 for i in range(max_source_length - 1)]
-source = np.concatenate([source] * hparams['batch_size'])
-do_inference(server, {'so': source}, 'vae_encoder')
-print('system is ready')
-
 encoder_in = Multiencoder(hparams['input_encoders'], hparams['max_source_len'])
 encoder_out = Multiencoder([hparams['output_encoder']], hparams['max_answer_len'])
 
@@ -67,7 +61,7 @@ def encode_batch(lines, model_name='vae_encoder'):
         raise BaseException('number of lines must be equal batch size')
     for l in lines:
         source = encoder_in.encode(l)
-        source = np.concatenate((source, [0 for i in range(max_source_length - len(source))]))
+        source = np.concatenate((source, np.zeros(max_source_length - len(source), 'int32')))
         sources.append(source)
     sources = np.concatenate(sources)
     mu_sigmas = do_inference(server, {'so': sources}, model_name)
@@ -88,6 +82,11 @@ def decode_batch(mu_sigmas, model_name='vae_decoder'):
     return a
 
 if __name__ == '__main__':
+    # make one test request
+    source = [1] + [0 for i in range(max_source_length - 1)]
+    source = np.concatenate([source] * hparams['batch_size'])
+    do_inference(server, {'so': source}, 'vae_encoder')
+    print('system is ready')
     contexts = []
     while True:
         inputs = input(">> ")

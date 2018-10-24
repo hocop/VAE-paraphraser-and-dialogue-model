@@ -6,8 +6,8 @@
     
     "freezing_mode": false,
     
-    "num_layers": 30,
-    "hidden_size": 256,
+    "num_layers": 10,
+    "hidden_size": 512,
     "dropout_rate": 0.1,
     
     "batch_size_train": 1000,
@@ -24,7 +24,7 @@
     "checkpoints_path": "/home/<user_name>/data/ai_we_deserve/heavy_model_data/<model_name>/checkpoints/",
     
     "answers_path": "/home/<user_name>/data/ai_we_deserve/light_model_data/<model_name>/answers/",
-    "export_path": "/home/<user_name>/data/ai_we_deserve/light_model_data/<model_name>/saved_model",
+    "export_path": "/home/<user_name>/data/vae/light_model_data/<model_name>/saved_model",
     
-    "chunk_size": 10000
+    "chunk_size": 100000
 }

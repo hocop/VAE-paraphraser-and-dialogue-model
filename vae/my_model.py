@@ -193,9 +193,11 @@ def get_model_fn(hparams):
                 optimizer = tf.train.AdamOptimizer(learning_rate=hparams['learning_rate'])
             else:
                 optimizer = tf.train.GradientDescentOptimizer(learning_rate=hparams['learning_rate'])
-            train_op = optimizer.minimize(
-                    loss=loss,
-                    global_step=tf.train.get_global_step())
+            # gradient clipping
+            gvs = optimizer.compute_gradients(loss)
+            if hparams['clip_grad_norm']:
+                gvs = [(grad if grad is None else tf.clip_by_norm(grad, hparams['clip_grad_norm']),
+                        var) for grad, var in gvs]
             return tf.estimator.EstimatorSpec(mode=mode, loss=loss, train_op=train_op)
         
         # Add evaluation metrics (for EVAL mode)

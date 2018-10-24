@@ -15,7 +15,7 @@
     "use_beam_search": true,
     "beam_width": 2,
     "length_penalty_weight": 0.6,
-    "batch_size": 4,
+    "batch_size": 100,
     "draw_attention": false,
     "draw_entropy": false,
     
@@ -24,6 +24,7 @@
     "num_epochs": 1,
     "learning_rate": 0.001,
     "label_smoothing": 0.1,
+    "clip_grad_norm": 2.0,
     "keep_checkpoint_max": 3,
     "adam": true,
     

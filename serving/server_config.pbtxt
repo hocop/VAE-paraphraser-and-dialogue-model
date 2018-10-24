@@ -1,12 +1,12 @@
 model_config_list: {
 config: {
 name: "vae_encoder",
-base_path: "/home/ruslan/data/vae/light_model_data/vae/saved_model/encoder/",
+base_path: "/home/models/encoder/",
 model_platform: "tensorflow"
 },
 config: {
 name: "vae_decoder",
-base_path: "/home/ruslan/data/vae/light_model_data/vae/saved_model/decoder/",
+base_path: "/home/models/decoder/",
 model_platform: "tensorflow"
 },
 }

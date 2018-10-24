@@ -17,6 +17,7 @@ for fname in ['dev', 'train']:
     batch_so = []
     batch_a = []
     chunks_count = 0
+    # so: source, a: answer
     for so, a in zip(open(hparams['pairs_path'] + fname + '_input.txt'),
                         open(hparams['pairs_path'] + fname + '_output.txt')):
         so = so.strip().lower()
@@ -26,8 +27,11 @@ for fname in ['dev', 'train']:
         batch_so.append(so)
         batch_a.append(a)
         if len(batch_so) == hparams['batch_size']:
-            chunk_so.extend([so for so in encode_batch(batch_so)])
-            chunk_a.extend([so for so in encode_batch(batch_a)])
+            try:
+                chunk_so.extend([so for so in encode_batch(batch_so)])
+                chunk_a.extend([so for so in encode_batch(batch_a)])
+            except:
+                print('skipped batch')
             batch_so = []
             batch_a = []
             if len(chunk_so) >= hparams['chunk_size']:
@@ -40,3 +44,4 @@ for fname in ['dev', 'train']:
     if len(chunk_so) >= 0:
         np.save(hparams['data_path'] + 'so_' + fname + str(chunks_count) + '.npy', np.array(chunk_so))
         np.save(hparams['data_path'] + 'a_' + fname + str(chunks_count) + '.npy', np.array(chunk_a))
+        print('chunk %i saved' % chunks_count)
