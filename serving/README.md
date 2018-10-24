@@ -1,8 +1,8 @@
-#How to Setup Tensorflow Serving on GPU
+## How to Setup Tensorflow Serving on GPU
 
 1) Make sure usual tensorflow-gpu is working  
     `pip3 show tensorflow-gpu`
-2) Install docker-ce and nvidia-docker. If nvidia-docker gives error, it will show proper version of docker-ce. Install it.  
+2) Install docker-ce and nvidia-docker (google for it). If nvidia-docker gives error, it will show proper version of docker-ce. Install it.  
 3) Go to directory where you want to store tf-server source and run  
     `git clone https://github.com/tensorflow/serving`  
     `cd serving/tensorflow_serving/tools/docker`  
