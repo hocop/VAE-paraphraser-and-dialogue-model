@@ -9,4 +9,9 @@ name: "vae_decoder",
 base_path: "/home/models/decoder/",
 model_platform: "tensorflow"
 },
+config: {
+name: "dialog",
+base_path: "/home/models/dialog/",
+model_platform: "tensorflow"
+},
 }

@@ -6,25 +6,25 @@
     
     "freezing_mode": false,
     
-    "num_layers": 10,
+    "num_layers": 1,
     "hidden_size": 512,
     "dropout_rate": 0.1,
     
     "batch_size_train": 1000,
     
-    "num_epochs": 10,
+    "num_epochs": 1000,
     "learning_rate": 0.001,
     "keep_checkpoint_max": 5,
     "adam": true,
     
-    "text_path": "/home/<user_name>/data/ai_we_deserve/all_comments/",
+    "text_path": "/home/<user_name>/data/comments/all_comments/",
     
-    "pairs_path": "/home/<user_name>/data/ai_we_deserve/pairs/",
-    "data_path": "/home/<user_name>/data/ai_we_deserve/data/",
-    "checkpoints_path": "/home/<user_name>/data/ai_we_deserve/heavy_model_data/<model_name>/checkpoints/",
+    "pairs_path": "/home/<user_name>/data/comments/pairs/",
+    "data_path": "/home/<user_name>/data/comments/data/",
+    "checkpoints_path": "/home/<user_name>/data/comments/heavy_model_data/<model_name>/checkpoints/",
     
-    "answers_path": "/home/<user_name>/data/ai_we_deserve/light_model_data/<model_name>/answers/",
-    "export_path": "/home/<user_name>/data/vae/light_model_data/<model_name>/saved_model",
+    "answers_path": "/home/<user_name>/data/comments/light_model_data/<model_name>/answers/",
+    "export_path": "/home/<user_name>/data/vae/light_model_data/vae/saved_model/",
     
-    "chunk_size": 100000
+    "chunk_size": 1000000
 }

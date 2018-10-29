@@ -3,12 +3,13 @@
     "user_name": "default",
     "experiment_series": "vae",
     
-    "num_layers": 3,
+    "num_layers": 2,
     
     "hidden_size": 300,
     "embedding_size": 300,
-    "latent_size": 128,
+    "latent_size": 300,
     "dropout_rate": 0.25,
+    "word_dropout": 0.5,
     
     "loss_normalize_by_length": true,
     
@@ -28,7 +29,7 @@
     "keep_checkpoint_max": 3,
     "adam": true,
     
-    "comments_path": "/home/<user_name>/data/ai_we_deserve/all_comments/",
+    "comments_path": "/home/<user_name>/data/comments/all_comments/",
     "paraphrases_path": "/home/<user_name>/data/datasets/paraphrases/",
     
     "pairs_path": "/home/<user_name>/data/vae/pairs/",
@@ -53,7 +54,7 @@
     
     "max_source_len": 1000,
     "max_answer_len": 1000,
-    "max_chunk_size": 10000,
+    "max_chunk_size": 20000,
     "max_lines_for_encoder": 1e6,
     
     

@@ -11,10 +11,10 @@ def dialog_inner_batch(mu_sigmas, model_name='dialog'):
 
 def dialog_end2end_batch(lines):
     mu_sigma = encode_batch(lines)
-    #mu_sigma[:, hparams['latent_size']:] *= 0
+    mu_sigma[:, hparams['latent_size']:] *= 0
     mu_sigma = dialog_inner_batch(mu_sigma)
-    #mu_sigma[:, hparams['latent_size']:] *= 0
-    answers = decode_batch(mu_sigmas)
+    mu_sigma[:, hparams['latent_size']:] *= 0
+    answers = decode_batch(mu_sigma)
     return answers
 
 if __name__ == '__main__':
@@ -31,7 +31,7 @@ if __name__ == '__main__':
         #if len(contexts) == 4:
         #    answers = dialog_end2end_batch(contexts)
         answers = dialog_end2end_batch([context] * hparams['batch_size'])
-        for a in answers:
+        for a in answers[:1]:
             print(a)
         
 

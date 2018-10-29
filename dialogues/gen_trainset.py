@@ -28,20 +28,26 @@ for fname in ['dev', 'train']:
         batch_a.append(a)
         if len(batch_so) == hparams['batch_size']:
             try:
-                chunk_so.extend([so for so in encode_batch(batch_so)])
-                chunk_a.extend([so for so in encode_batch(batch_a)])
+                b_so = [so for so in encode_batch(batch_so)]
+                b_a = [a for a in encode_batch(batch_a)]
+                chunk_so.extend(b_so)
+                chunk_a.extend(b_a)
             except:
                 print('skipped batch')
             batch_so = []
             batch_a = []
             if len(chunk_so) >= hparams['chunk_size']:
-                np.save(hparams['data_path'] + 'so_' + fname + str(chunks_count) + '.npy', np.array(chunk_so))
-                np.save(hparams['data_path'] + 'a_' + fname + str(chunks_count) + '.npy', np.array(chunk_a))
+                chunk_so = np.array(chunk_so).astype('float16')
+                chunk_a = np.array(chunk_a).astype('float16')
+                np.save(hparams['data_path'] + 'so_' + fname + str(chunks_count) + '.npy', chunk_so)
+                np.save(hparams['data_path'] + 'a_' + fname + str(chunks_count) + '.npy', chunk_a)
                 chunk_so = []
                 chunk_a = []
                 print('chunk %i saved' % chunks_count)
                 chunks_count += 1
     if len(chunk_so) >= 0:
-        np.save(hparams['data_path'] + 'so_' + fname + str(chunks_count) + '.npy', np.array(chunk_so))
-        np.save(hparams['data_path'] + 'a_' + fname + str(chunks_count) + '.npy', np.array(chunk_a))
+        chunk_so = np.array(chunk_so).astype('float16')
+        chunk_a = np.array(chunk_a).astype('float16')
+        np.save(hparams['data_path'] + 'so_' + fname + str(chunks_count) + '.npy', chunk_so)
+        np.save(hparams['data_path'] + 'a_' + fname + str(chunks_count) + '.npy', chunk_a)
         print('chunk %i saved' % chunks_count)

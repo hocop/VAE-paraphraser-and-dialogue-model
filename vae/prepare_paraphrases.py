@@ -75,14 +75,16 @@ for i, text in enumerate(corpus):
     if '\t' in text:
         text1, text2 = text.split('\t')
         if i >= 2 * n_dev_test:
+            # normal order
             ifile.write(text1 + '\n')
-            ifile.write(text2 + '\n')
-            ifile.write(text1 + '\n')
-            ifile.write(text2 + '\n')
             ofile.write(text1 + '\n')
+            ifile.write(text2 + '\n')
             ofile.write(text2 + '\n')
-            ofile.write(text2 + '\n')
-            ofile.write(text1 + '\n')
+            # reversed order
+            #ifile.write(text1 + '\n')
+            #ofile.write(text2 + '\n')
+            #ifile.write(text2 + '\n')
+            #ofile.write(text1 + '\n')
         else:
             for _ in range(10):
                 ifile.write(text1 + '\n')

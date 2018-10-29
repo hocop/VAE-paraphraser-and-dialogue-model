@@ -25,21 +25,21 @@ estimator = tf.estimator.Estimator(
 chunk_so_files = sorted([fname for fname in easyfs.onlyFiles(hparams['data_path']) if 'so_train' in fname])
 chunk_a_files = sorted([fname for fname in easyfs.onlyFiles(hparams['data_path']) if 'a_train' in fname])
 
-so_eval = np.load(hparams['data_path'] + 'so_dev0.npy').astype('float32')
-a_eval = np.load(hparams['data_path'] + 'a_dev0.npy').astype('float32')
+so_eval = np.load(hparams['data_path'] + 'so_dev0.npy')
+a_eval = np.load(hparams['data_path'] + 'a_dev0.npy')
 
 for epoch_i in range(hparams['num_epochs']):
     for so_fname, a_fname in zip(chunk_so_files, chunk_a_files):
         # Train one chunk
         start = time.time()
-        so_data = np.load(hparams['data_path'] + so_fname).astype('float32')
-        a_data = np.load(hparams['data_path'] + a_fname).astype('float32')
+        so_data = np.load(hparams['data_path'] + so_fname)
+        a_data = np.load(hparams['data_path'] + a_fname)
         print('Chunk:', so_fname, so_data.shape, a_fname)
         train_input_fn = tf.estimator.inputs.numpy_input_fn(
                 x={'mu_sigma': so_data},
                 y=a_data,
                 batch_size=hparams['batch_size_train'],
-                num_epochs=1,
+                num_epochs=10,
                 shuffle=True)
         estimator.train(
                 input_fn=train_input_fn,

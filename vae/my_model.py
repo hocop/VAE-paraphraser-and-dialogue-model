@@ -41,6 +41,11 @@ def get_model_fn(hparams):
                 features_help = tf.concat([tf.zeros([batch_size, 1], dtype=tf.int32), labels], 1)
                 labels_embedded = tf.nn.embedding_lookup(answer_embeddings,
                         features_help[:,:tf.reduce_max(ans_len) + 1])
+                if hparams['word_dropout'] and mode == tf.estimator.ModeKeys.TRAIN:
+                    wdrop_mask = tf.random_uniform([batch_size, tf.reduce_max(ans_len) + 1, 1])
+                    wdrop_mask = (tf.sign(wdrop_mask - hparams['word_dropout']) + 1) / 2
+                    wdrop_mask = tf.cast(wdrop_mask, tf.float32)
+                    labels_embedded *= wdrop_mask
             
             # Encode
             layers = [tf.contrib.rnn.DropoutWrapper(
@@ -76,20 +81,28 @@ def get_model_fn(hparams):
         loss_kl = (tf.reduce_mean(mu**2) + tf.reduce_mean(sigma**2) - 2 * tf.reduce_mean(logsigma) - 1) / 2
         loss_kl = tf.identity(loss_kl, name='loss_kl')
         
-        # Decode
-        # make decoder cell
-        layers = [tf.contrib.rnn.DropoutWrapper(
-                        tf.contrib.rnn.GRUCell(
-                                hparams['hidden_size'], name='dec_cell%i' % i),
-                            input_keep_prob=1 - hparams['dropout_rate'] if dropout_bool else 1
-                        ) for i in range(hparams['num_layers'])]
-        dec_cell = tf.contrib.rnn.MultiRNNCell(layers)
-        
         # make initial state
+        #initial_state = tuple([tf.zeros([batch_size, hparams['hidden_size']])] * hparams['num_layers'])
         initial_state = to_decoder
         if mode == tf.estimator.ModeKeys.PREDICT and hparams['use_beam_search']:
             decoder_initial_state = tf.contrib.seq2seq.tile_batch(
                     initial_state, multiplier=hparams['beam_width'])
+            decoder_z = tf.contrib.seq2seq.tile_batch(
+                    z, multiplier=hparams['beam_width'])
+        else:
+            decoder_z = z
+        
+        # Decode
+        # make decoder cell
+        layers = [tf.contrib.rnn.DropoutWrapper(
+                        tf.contrib.rnn.GRUCell(
+                                hparams['hidden_size'],
+                                #decoder_z if i == 0 else None,
+                                name='dec_cell%i' % i
+                        ),
+                        input_keep_prob=1 - hparams['dropout_rate'] if dropout_bool else 1
+                ) for i in range(hparams['num_layers'])]
+        dec_cell = tf.contrib.rnn.MultiRNNCell(layers)
         
         # choose projection layer
         if mode == tf.estimator.ModeKeys.PREDICT and hparams['use_beam_search']:
@@ -198,6 +211,7 @@ def get_model_fn(hparams):
             if hparams['clip_grad_norm']:
                 gvs = [(grad if grad is None else tf.clip_by_norm(grad, hparams['clip_grad_norm']),
                         var) for grad, var in gvs]
+            train_op = optimizer.apply_gradients(gvs, tf.train.get_global_step())
             return tf.estimator.EstimatorSpec(mode=mode, loss=loss, train_op=train_op)
         
         # Add evaluation metrics (for EVAL mode)
@@ -467,5 +481,52 @@ def make_bags(sparse,
     return story, embedded_mask, embedded_len, max_embedded_len
 
 
-    
+class DumbRNNCell(rnn_cell_impl.RNNCell):
+    # very bad RNN cell. Remembers few previous steps. Relies much on "input_representation"
+    def __init__(self,
+            num_units,
+            input_representation=None,
+            activation=None,
+            reuse=None,
+            name=None,
+            dtype=None):
+        super(DumbRNNCell, self).__init__(_reuse=reuse, name=name, dtype=dtype)
+        # Inputs must be 2-dimensional.
+        self.input_spec = base_layer.InputSpec(ndim=2)
+        self.input_representation = input_representation
+        if self.input_representation is not None:
+            self.input_representation = tf.layers.dense(self.input_representation,
+                        num_units, use_bias=False, name='z_to_hidden')
+        self._num_units = num_units
+        self._activation = activation or math_ops.tanh
+    @property
+    def state_size(self):
+        return self._num_units
+    @property
+    def output_size(self):
+        return self._num_units
+    def build(self, inputs_shape):
+        if inputs_shape[1].value is None:
+            raise ValueError("Expected inputs.shape[-1] to be known, saw shape: %s"
+                       % inputs_shape)
+        self.built = True
+    def call(self, inputs, state_in):
+        x = tf.concat([inputs, state_in], 1)
+        x = tf.layers.dense(x, self._num_units, name='candidate')
+        if self.input_representation is not None:
+            x += self.input_representation
+        x = self._activation(x)
+        new_state = (x + state_in) / 2
+        return new_state, new_state
+
+
+
+
+
+
+
+
+
+
+
 
