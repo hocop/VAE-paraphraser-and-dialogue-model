@@ -1,5 +1,5 @@
 {
-    "model_name": "vae",
+    "model_name": "vae_para",
     "user_name": "default",
     "experiment_series": "vae",
     
@@ -32,6 +32,7 @@
     "comments_path": "/home/<user_name>/data/comments/all_comments/",
     "paraphrases_path": "/home/<user_name>/data/datasets/paraphrases/",
     
+    "include_paraphrases": true,
     "pairs_path": "/home/<user_name>/data/vae/pairs/",
     "data_path": "/home/<user_name>/data/vae/data/",
     "checkpoints_path": "/home/<user_name>/data/vae/heavy_model_data/<model_name>/checkpoints/",

@@ -81,10 +81,11 @@ for i, text in enumerate(corpus):
             ifile.write(text2 + '\n')
             ofile.write(text2 + '\n')
             # reversed order
-            #ifile.write(text1 + '\n')
-            #ofile.write(text2 + '\n')
-            #ifile.write(text2 + '\n')
-            #ofile.write(text1 + '\n')
+            if hparams['include_paraphrases']:
+                ifile.write(text1 + '\n')
+                ofile.write(text2 + '\n')
+                ifile.write(text2 + '\n')
+                ofile.write(text1 + '\n')
         else:
             for _ in range(10):
                 ifile.write(text1 + '\n')

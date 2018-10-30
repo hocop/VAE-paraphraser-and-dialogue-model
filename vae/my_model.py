@@ -50,16 +50,25 @@ def get_model_fn(hparams):
             # Encode
             layers = [tf.contrib.rnn.DropoutWrapper(
                             tf.contrib.rnn.GRUCell(
-                                    hparams['hidden_size'], name='enc_cell%i' % i),
+                                    hparams['hidden_size'], name='enc_cell_fw%i' % i),
                                 input_keep_prob=1 - hparams['dropout_rate'] if dropout_bool else 1
-                            ) for i in range(hparams['num_layers'])]
-            enc_cell = tf.contrib.rnn.MultiRNNCell(layers)
-            context, encoder_state = tf.nn.dynamic_rnn(
-                enc_cell,
+                            ) for i in range(hparams['num_layers'] * 2)]
+            layers_fw, layers_bw = layers[:hparams['num_layers']], layers[hparams['num_layers']:]
+            enc_cell_fw = tf.contrib.rnn.MultiRNNCell(layers_fw)
+            enc_cell_bw = tf.contrib.rnn.MultiRNNCell(layers_bw)
+            (context_fw, context_bw), (encoder_state_fw, encoder_state_bw) = tf.nn.bidirectional_dynamic_rnn(
+                enc_cell_fw,
+                enc_cell_bw,
                 source,
                 dtype=tf.float32,
                 sequence_length=source_len
             )
+            encoder_state = [tf.concat([fw, bw], 1) for fw, bw in zip(encoder_state_fw, encoder_state_bw)]
+            att_fw = context_fw * tf.reshape(encoder_state_fw, [-1, 1, hparams['hidden_size']])
+            att_bw = context_bw * tf.reshape(encoder_state_bw, [-1, 1, hparams['hidden_size']])
+            att = (tf.nn.softmax(tf.reduce_mean(att_bw, 2)) + tf.nn.softmax(tf.reduce_mean(att_fw, 2))) / 2
+            semantic = tf.reduce_sum(source * tf.reshape(att, [batch_size, -1, 1]), 1)
+            encoder_state.append(semantic)
         
         # variational latent layer
         if 'mu_sigma' in features:
