@@ -22,7 +22,7 @@
     
     "log_bleu_every": 1,
     "tokens_per_batch": 30000,
-    "num_epochs": 1,
+    "num_epochs": 2,
     "learning_rate": 0.001,
     "label_smoothing": 0.1,
     "clip_grad_norm": 2.0,
@@ -32,6 +32,7 @@
     "comments_path": "/home/<user_name>/data/comments/all_comments/",
     "paraphrases_path": "/home/<user_name>/data/datasets/paraphrases/",
     
+    "include_paraphrases": false,
     "pairs_path": "/home/<user_name>/data/vae/pairs/",
     "data_path": "/home/<user_name>/data/vae/data/",
     "checkpoints_path": "/home/<user_name>/data/vae/heavy_model_data/<model_name>/checkpoints/",

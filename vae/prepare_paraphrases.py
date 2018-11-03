@@ -1,7 +1,7 @@
 import easyfs
 import string
 import os
-from random import shuffle
+import random
 
 from load_hparams import hparams, PrintHparamsInfo
 
@@ -55,7 +55,8 @@ for fname in easyfs.onlyFiles(hparams['paraphrases_path'], full_path=True):
 print('len(corpus)', len(corpus))
 
 # shuffle
-shuffle(corpus)
+random.seed(0)
+random.shuffle(corpus)
 
 # write output
 dev_in = open(hparams['pairs_path'] + 'dev_input.txt', 'w')
